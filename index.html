@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="manifest" href="manifest.webmanifest">
-<meta name="theme-color" content="#002A4C">
+<meta name="theme-color" content="#0b3b6f">
 <link rel="apple-touch-icon" href="icon-180.png">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
@@ -17,7 +17,7 @@
   }
   .wrap { max-width: 520px; margin: 0 auto; }
   header { text-align: center; margin-bottom: 16px; }
-  header h1 { font-size: 1.25rem; color: #002A4C; }
+  header h1 { font-size: 1.25rem; color: #0b3b6f; }
   header p { font-size: .85rem; color: #475569; margin-top: 4px; }
   .card {
     background: #fff; border-radius: 14px; padding: 16px;
@@ -54,6 +54,7 @@
   .stat.big .val { color: #15803d; font-size: 1.8rem; }
   canvas { width: 100%; height: auto; background: #fff; border: 1px solid #e2e8f0; border-radius: 10px; }
   .legend { font-size: .8rem; color: #475569; margin-top: 6px; text-align: center; }
+  .hint { font-size: .78rem; color: #64748b; margin-top: 4px; }
   .detail { font-size: .85rem; color: #334155; line-height: 1.7; margin-top: 10px; }
   .table-wrap { max-height: 240px; overflow: auto; margin-top: 10px; border: 1px solid #e2e8f0; border-radius: 8px; }
   table { width: 100%; border-collapse: collapse; font-size: .8rem; }
@@ -63,6 +64,7 @@
   footer { text-align: center; font-size: .75rem; color: #64748b; margin-top: 8px; }
   input[type=text], input[type=date], input[type=time], textarea { width: 100%; font: inherit; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; }
   textarea { min-height: 70px; resize: vertical; }
+  select { width: 100%; font: inherit; font-size: 1.05rem; padding: 12px; border: 1px solid #cbd5e1; border-radius: 8px; background: #fff; }
   .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
   .actions button { font-size: .92rem; padding: 12px 8px; }
   #btnPdf { background: #0f766e; }
@@ -71,11 +73,31 @@
   .lux-input:focus { outline: 2px solid #2563eb; border-color: transparent; }
   .table-wrap { -webkit-overflow-scrolling: touch; }
   .summary-line { background: #f8fafc; padding: 10px; border-radius: 8px; margin-top: 10px; font-size: .88rem; line-height: 1.6; }
+  .pend { background: #fef3c7; border: 1px solid #f59e0b; color: #78350f; border-radius: 12px; padding: 10px 12px; margin-bottom: 14px; font-size: .9rem; line-height: 1.5; }
+  .pend button { margin-top: 8px; padding: 10px; font-size: .95rem; background: #b45309; }
+  .warn-line { color: #92400e; font-size: .82rem; margin-top: 4px; display: none; }
+  #btnGuion { background: #fff; color: #475569; border: 1px solid #cbd5e1; font-size: .92rem; padding: 10px; margin-top: 8px; }
+  #btnGuion:disabled { opacity: .5; }
   .report-only { display: none; }
   .lux-input.bad { border-color: #b91c1c; background: #fef2f2; }
   #btnCsv { background: #0f766e; }
   #btnClr { background: #b91c1c; }
   #obsPrint { white-space: pre-wrap; font-size: 9pt; }
+
+
+
+  /* Medición por puestos */
+  .next-box { background: #0b3b6f; color: #fff; border-radius: 12px; padding: 12px; text-align: center; margin-bottom: 12px; }
+  .next-box .lbl { font-size: .8rem; opacity: .85; }
+  .next-box .big { font-size: 2.6rem; font-weight: 800; line-height: 1.1; }
+  .next-box .sub { font-size: .78rem; opacity: .85; }
+  #pLux { font-size: 1.6rem; text-align: center; }
+  #btnAdd { background: #0f766e; margin-top: 10px; }
+  #btnNoMed { background: #fff; color: #475569; border: 1px solid #cbd5e1; font-size: .92rem; padding: 10px; margin-top: 8px; }
+  #btnUndo { background: #e2e8f0; color: #0f172a; font-size: .9rem; padding: 10px; margin-top: 10px; }
+  .ok-msg { background: #dcfce7; color: #14532d; border-radius: 8px; padding: 8px 10px; margin-top: 10px; font-size: .9rem; display: none; }
+  .p-num { font-weight: 800; font-size: .95rem; }
+
   @page { size: A4 portrait; margin: 12mm; }
   @media print {
     body { background: #fff; color: #111827; padding: 0; font-size: 10pt; }
@@ -85,7 +107,7 @@
     header p { font-size: 9pt; }
     .card { box-shadow: none; border: 1px solid #cbd5e1; border-radius: 4px; padding: 10px; margin-bottom: 8px; break-inside: avoid; }
     .card h2 { font-size: 11pt; margin-bottom: 6px; }
-    .no-print, button, .error { display: none !important; }
+    .no-print, button, .error, .hint { display: none !important; }
     .report-only { display: block; }
     input[type=text], input[type=date], input[type=time], input[type=number], textarea { border: none; border-bottom: 1px solid #9ca3af; border-radius: 0; padding: 2px 0; background: transparent; font-size: 9pt; }
     .field { margin-bottom: 6px; }
@@ -106,26 +128,38 @@
     .card#gridCard { break-inside: auto; }
     tr { break-inside: avoid; }
     footer { margin-top: 6mm; }
+    .card#puestosCard { break-inside: auto; }
   }
 </style>
 </head>
 <body>
 <div class="wrap">
   <header>
-    <h1>.: ZONDA CORP SRL :.</h1>
-    <p>Cálculo y registro de medición de iluminación</p>
+    <h1>ZONDA CORP SRL</h1>
+    <p>Medición de iluminación (Res. SRT 84/2012)</p>
   </header>
+
+  <div class="pend no-print hidden" id="pendBanner">
+    <div id="pendTxt"></div>
+    <button id="btnPendCsv" type="button">Exportar CSV ahora</button>
+  </div>
+
+  <div class="card no-print" id="modoCard" style="padding:10px 14px;margin-bottom:10px">
+    <div class="field" style="margin:0"><select id="modo" aria-label="Modo de grilla">
+      <option value="puestos">Medición por puestos (puntos numerados)</option>
+      <option value="norma">Grilla normativa (N según índice K)</option>
+      <option value="custom">Grilla personalizada (defino columnas y filas)</option>
+    </select></div>
+  </div>
 
   <div class="card" id="identCard">
     <h2>Identificación del relevamiento</h2>
     <div class="field"><label for="empresa">Empresa</label><input type="text" id="empresa"  placeholder="Empresa / cliente"></div>
     <div class="field"><label for="establecimiento">Establecimiento / ubicación</label><input type="text" id="establecimiento" placeholder="Ej.: Planta, edificio, dirección"></div>
-    <div class="field"><label for="sector">Sector / punto de muestreo</label><input type="text" id="sector" placeholder="Ej.: Depósito, puesto 1"></div>
+    <div class="field"><label for="sector">Sector</label><input type="text" id="sector" placeholder="Ej.: Depósito"><div class="warn-line" id="secWarn"></div></div>
+    <div class="field"><label for="croquis">Croquis / plano de referencia</label><input type="text" id="croquis" placeholder="Ej.: Croquis 3 - hoja 1"></div>
     <div class="field"><label for="origen">Origen / orientación del croquis</label><input type="text" id="origen" placeholder="Ej.: A1 junto a la puerta de ingreso"></div>
     <div class="field"><label for="fecha">Fecha de relevamiento</label><input type="date" id="fecha"></div>
-    <div class="field"><label for="horaInicio">Hora de inicio</label><input type="time" id="horaInicio"></div>
-    <div class="field"><label for="horaFin">Hora de fin</label><input type="text" id="horaFin" readonly aria-readonly="true" placeholder="Se registra al exportar el PDF"></div>
-    <p class="legend no-print">La hora de inicio se registra al abrir o iniciar una ficha nueva. La hora de fin se registra al exportar el PDF.</p>
   </div>
 
   <div class="card" id="geometryCard">
@@ -138,32 +172,30 @@
       <label for="A">Ancho del recinto (A) <small>- m</small></label>
       <div class="input-row"><input type="text" id="A" inputmode="decimal" autocomplete="off" placeholder="Ej: 6"><span class="unit">m</span></div>
     </div>
-    <div class="field">
+    <div class="field" data-norma>
       <label for="H">Altura de montaje (Hm) <small>- centro de la luminaria al plano de trabajo</small></label>
       <div class="input-row"><input type="text" id="H" inputmode="decimal" autocomplete="off" placeholder="Ej: 2.8"><span class="unit">m</span></div>
+    </div>
+    <div class="field" data-custom style="display:none">
+      <label for="nCols">Columnas <small>- divisiones a lo largo del largo (L)</small></label>
+      <div class="input-row"><input type="text" id="nCols" inputmode="numeric" autocomplete="off" placeholder="Ej: 5"><span class="unit">col.</span></div>
+    </div>
+    <div class="field" data-custom style="display:none">
+      <label for="nFilas">Filas <small>- divisiones a lo ancho (A)</small></label>
+      <div class="input-row"><input type="text" id="nFilas" inputmode="numeric" autocomplete="off" placeholder="Ej: 4"><span class="unit">filas</span></div>
     </div>
     <button id="btnCalc" class="no-print">Calcular puntos de medición</button>
     <div class="error" id="err">Ingresa valores mayores que cero en los tres campos.</div>
     <div class="error" id="stale">Cambiaste las dimensiones: volvé a calcular para actualizar la grilla.</div>
   </div>
 
-  <div class="card">
-    <h2>Fórmulas aplicadas</h2>
-    <div class="formula">
-K = (L × A) / (Hm × (L + A))<br>
-x = índice K redondeado al entero superior<br>
-  (si K ≥ 3 → x = 4)<br>
-N = (x + 2)²
-    </div>
-  </div>
-
   <div class="card hidden" id="resultCard">
     <h2>2. Resultados</h2>
     <div class="grid-results">
-      <div class="stat"><div class="val" id="rK">-</div><div class="lbl">Índice de local K</div></div>
-      <div class="stat"><div class="val" id="rX">-</div><div class="lbl">x (redondeado)</div></div>
-      <div class="stat big"><div class="val" id="rN">-</div><div class="lbl">Número mínimo de puntos N</div></div>
-      <div class="stat"><div class="val" id="rGrid">-</div><div class="lbl">Grilla (filas × columnas)</div></div>
+      <div class="stat" data-norma><div class="val" id="rK">-</div><div class="lbl">Índice de local K</div></div>
+      <div class="stat" data-norma><div class="val" id="rX">-</div><div class="lbl">x (redondeado)</div></div>
+      <div class="stat big" data-norma><div class="val" id="rN">-</div><div class="lbl">Número mínimo de puntos N</div></div>
+      <div class="stat"><div class="val" id="rGrid">-</div><div class="lbl">Grilla (columnas × filas)</div></div>
       <div class="stat"><div class="val" id="rTotal">-</div><div class="lbl">Puntos finales</div></div>
     </div>
     <div class="detail" id="detail"></div>
@@ -172,34 +204,65 @@ N = (x + 2)²
   <div class="card hidden" id="gridCard">
     <h2>3. Grilla de medición</h2>
     <canvas id="cv" width="600" height="600"></canvas>
-    <div class="legend">● Punto (azul = mínimo, verde = máximo) · Columnas con letras y filas con números (ej.: A1) · Origen X=0, Y=0: esquina superior izquierda del esquema</div>
+    <div class="legend">● Punto (azul = mínimo, verde = máximo) · Columnas con letras y filas con números (ej.: A1) · Origen X=0, Y=0: esquina superior izquierda del esquema · El N° de muestreo se asigna al guardar el sector</div>
     <div class="table-wrap">
       <table>
-        <thead><tr><th>Punto</th><th>Fila</th><th>Columna</th><th>X (m)</th><th>Y (m)</th><th>Iluminancia (lux)</th></tr></thead>
+        <thead><tr><th>N°</th><th>Punto</th><th>Fila</th><th>Columna</th><th>X (m)</th><th>Y (m)</th><th>Iluminancia (lux)</th></tr></thead>
         <tbody id="tbody"></tbody>
       </table>
     </div>
+    <button id="btnGuion" type="button" class="no-print" disabled>Tocá una celda para marcarla como no medida ( - )</button>
     <div class="summary-line" id="luxSummary">Ingrese las lecturas de iluminancia en lux en la tabla. El promedio se calculará con los valores cargados.</div>
+  </div>
+
+  <div class="card hidden" id="puestosCard">
+    <h2>Medición por puestos</h2>
+    <div class="no-print">
+      <div class="next-box">
+        <div class="lbl">Próximo punto de muestreo</div>
+        <div class="big" id="pNextShow">1</div>
+        <div class="sub">Anotá este número en el croquis, junto al puesto</div>
+      </div>
+      <div class="field">
+        <label for="pLux">Valor medido</label>
+        <div class="input-row"><input type="text" id="pLux" inputmode="decimal" autocomplete="off" placeholder="lux" enterkeyhint="done"><span class="unit">lux</span></div>
+      </div>
+      <button id="btnAdd" type="button">Registrar punto</button>
+      <button id="btnNoMed" type="button">No se pudo medir ( - )</button>
+      <div class="ok-msg" id="pOk"></div>
+      <div class="error" id="pErr"></div>
+      <div class="field" style="margin-top:12px">
+        <label for="pNext">Numeración <small>- cambiala solo para continuar otra planilla (ej.: 69)</small></label>
+        <div class="input-row"><input type="text" id="pNext" inputmode="numeric" autocomplete="off"><span class="unit">N°</span></div>
+      </div>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th>Punto</th><th>Hora</th><th>Valor medido (lux)</th></tr></thead>
+        <tbody id="pBody"></tbody>
+      </table>
+    </div>
+    <div class="summary-line" id="pSummary">Todavía no hay puntos registrados en este sector.</div>
+    <button id="btnUndo" type="button" class="no-print">Borrar último punto</button>
   </div>
 
   <div class="card" id="obsCard">
     <h2>4. Observaciones del relevamiento</h2>
-    <textarea id="observaciones" placeholder="Obstáculos, condiciones particulares, desvíos de la grilla u otras observaciones..."></textarea>
+    <textarea id="observaciones" placeholder="Obstáculos, luminarias fuera de servicio, condiciones particulares, desvíos de la grilla... La ubicación de luminarias y ventanas se indica en el croquis."></textarea>
     <div id="obsPrint" class="report-only"></div>
   </div>
 
-
-
   <div class="actions no-print">
     <button id="btnPdf">Exportar ficha PDF</button>
-    <button id="btnNew">Nueva ficha / sector</button>
+    <button id="btnNew">Guardar y nuevo sector</button>
   </div>
   <div class="card no-print" id="regCard">
     <h2>5. Sectores registrados en este equipo</h2>
     <div class="summary-line" id="regInfo"></div>
-    <div class="actions" style="margin-top:10px;margin-bottom:0"><button id="btnCsv">Descargar CSV</button><button id="btnClr">Borrar registros</button></div>
+    <button id="btnCsv" style="margin-top:10px">Exportar CSV del relevamiento</button>
+    <button id="btnClr" style="margin-top:10px">Borrar registro</button>
   </div>
-  <footer>Registro de cálculo y medición de iluminancia · </footer>
+  <footer>Registro de cálculo y medición de iluminancia · V6 · Las lecturas deben efectuarse en el centro de cada área.</footer>
 </div>
 
 <script>
@@ -217,9 +280,87 @@ function numeroColumna(n) {
 }
 
 let estado = null;
-const IDS = ['empresa','establecimiento','sector','origen','fecha','horaInicio','horaFin','L','A','H','observaciones'];
-const KEY = 'lux_v6_ficha', KREG = 'lux_v6_reg';
+const IDS = ['empresa','establecimiento','sector','croquis','origen','fecha','modo','L','A','H','nCols','nFilas','observaciones'];
+const KEY = 'lux_v6_ficha', KREG = 'lux_v6_reg', KNUM = 'lux_v6_num';
+let horasG = {};  // hora de cada lectura de grilla, por punto (se registra sola al cargar el valor)
+let fichaId = nuevoId();   // identifica el sector en curso, para no confundirlo con otro del mismo nombre
+let fichaLegada = false;   // ficha en curso guardada por una versión anterior (sin id)
+let celdaG = null;          // última celda de la grilla seleccionada (botón "-")
+let ptosP = [];   // puntos del sector en modo puestos: { n, hora, lux }
 const esc = t => String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function snapActual() {
+  const m = $('modo').value;
+  return [num('L'), num('A'), m === 'norma' ? num('H') : '', m,
+          m === 'custom' ? parseInt($('nCols').value, 10) : '', m === 'custom' ? parseInt($('nFilas').value, 10) : ''].join('|');
+}
+function aplicarModo() {
+  const m = $('modo').value, c = m === 'custom', p = m === 'puestos';
+  document.querySelectorAll('[data-norma]').forEach(e => e.style.display = c ? 'none' : '');
+  document.querySelectorAll('[data-custom]').forEach(e => e.style.display = c ? '' : 'none');
+  $('geometryCard').classList.toggle('hidden', p);
+  $('puestosCard').classList.toggle('hidden', !p);
+  if (p) { $('resultCard').classList.add('hidden'); $('gridCard').classList.add('hidden'); }
+}
+
+// ---------- Medición por puestos ----------
+function leerNext() {
+  const v = parseInt($('pNext').value, 10);
+  if (v >= 1) return v;
+  try { const g = parseInt(localStorage.getItem(KNUM), 10); if (g >= 1) return g; } catch (e) {}
+  return 1;
+}
+function fijarNext(n) {
+  $('pNext').value = n; $('pNextShow').textContent = n;
+  try { localStorage.setItem(KNUM, String(n)); } catch (e) {}
+}
+function renderPuestos() {
+  $('pNextShow').textContent = leerNext();
+  $('pBody').innerHTML = ptosP.map((q, i) =>
+    `<tr><td class="p-num">${q.n}</td><td>${esc(q.hora)}</td><td><input class="lux-input p-lux" type="text" inputmode="decimal" autocomplete="off" data-i="${i}" value="${esc(q.lux)}" aria-label="Valor medido punto ${q.n}"></td></tr>`
+  ).join('');
+  resumenPuestos();
+}
+function resumenPuestos() {
+  if (!ptosP.length) { $('pSummary').textContent = 'Todavía no hay puntos registrados en este sector.'; return; }
+  const vals = []; let na = 0, mal = 0;
+  document.querySelectorAll('.p-lux').forEach(el => {
+    const q = leerLux(el); el.classList.toggle('bad', q.t === 'mal');
+    if (q.t === 'ok') vals.push(q.v); else if (q.t === 'na') na++; else if (q.t === 'mal') mal++;
+  });
+  let h = `Puntos registrados: <b>${ptosP.length}</b> (N° ${ptosP[0].n} a ${ptosP[ptosP.length - 1].n})` + (na ? ` · No se pudo medir: <b>${na}</b>` : '');
+  if (vals.length) h += `<br>Mínimo: <b>${Math.min(...vals).toFixed(1)} lux</b> · Máximo: <b>${Math.max(...vals).toFixed(1)} lux</b>`;
+  if (mal) h += `<br><span style="color:#b91c1c">⚠ ${mal} valor(es) inválido(s) en rojo.</span>`;
+  h += '<br><i>Medición puntual: la uniformidad no aplica (se informa "-").</i>';
+  $('pSummary').innerHTML = h;
+}
+function agregarPunto() {
+  const el = $('pLux'), q = leerLux(el);
+  $('pErr').style.display = 'none';
+  if (q.t === 'vacio' || q.t === 'mal') {
+    $('pErr').textContent = q.t === 'vacio' ? 'Ingresá el valor medido en lux, o tocá "No se pudo medir".' : 'Valor inválido: usá solo números, con coma o punto decimal, o "-".';
+    $('pErr').style.display = 'block'; el.focus(); return;
+  }
+  const n = leerNext();
+  if (ptosP.some(r => r.n === n) && !confirm('El punto N° ' + n + ' ya está cargado en este sector. ¿Registrarlo igual?')) return;
+  const lux = q.t === 'na' ? '-' : el.value.trim();
+  ptosP.push({ n, hora: horaLocal(), lux });
+  fijarNext(n + 1);
+  el.value = '';
+  renderPuestos();
+  $('pOk').innerHTML = `✓ Punto <b>${n}</b> = ${esc(lux)}${q.t === 'na' ? ' (no se pudo medir)' : ' lux'} · anotá <b>${n}</b> en el croquis`;
+  $('pOk').style.display = 'block';
+  guardar();
+  el.focus();   // deja el teclado abierto para el próximo punto
+}
+function borrarUltimo() {
+  if (!ptosP.length) return;
+  const u = ptosP[ptosP.length - 1];
+  if (!confirm('¿Borrar el punto N° ' + u.n + ' (' + u.lux + ')? La numeración vuelve a ' + u.n + '.')) return;
+  ptosP.pop();
+  fijarNext(u.n);
+  $('pOk').style.display = 'none';
+  renderPuestos(); guardar();
+}
 function num(id) { return parseFloat($(id).value.trim().replace(',', '.')); }
 
 // Elige nL x nA con nL*nA >= N y celdas lo más cuadradas posible
@@ -236,7 +377,7 @@ function elegirGrilla(L, A, N) {
 function leerLux(el) {
   const t = el.value.trim();
   if (t === '') return { t: 'vacio' };
-  if (/^(n\/?a|x)$/i.test(t)) return { t: 'na' };
+  if (/^(n\/?a|x|-|–|—)$/i.test(t)) return { t: 'na' };   // "-" = no se pudo medir
   if (/^\d{1,3}[.,]\d{3}$/.test(t) || !/^\d+([.,]\d+)?$/.test(t)) return { t: 'mal' };
   return { t: 'ok', v: parseFloat(t.replace(',', '.')) };
 }
@@ -248,34 +389,101 @@ function redibujar() {
 
 function verificarVigencia() {
   if (!estado) return;
-  const vigente = estado.snap === [num('L'), num('A'), num('H')].join('|');
+  const vigente = estado.snap === snapActual();
   $('resultCard').classList.toggle('hidden', !vigente);
   $('gridCard').classList.toggle('hidden', !vigente);
   $('stale').style.display = vigente ? 'none' : 'block';
   if (vigente) redibujar();
 }
 
+function nuevoId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+const claveSector = r => [r.establecimiento || '', (r.sector || '').trim().toLowerCase(), r.fecha || ''].join('|');
+// Registro del sector en curso: por id; los registros de versiones anteriores (sin id) se reconocen por nombre y fecha.
+function buscarActual(reg) {
+  const actual = { establecimiento: $('establecimiento').value, sector: $('sector').value, fecha: $('fecha').value };
+  let i = reg.findIndex(r => r.fichaId === fichaId);
+  if (i < 0 && fichaLegada) i = reg.findIndex(r => !r.fichaId && claveSector(r) === claveSector(actual));
+  return i;
+}
+// Otro sector ya guardado con el mismo nombre, establecimiento y fecha.
+function choque(nombre, reg) {
+  const k = claveSector({ establecimiento: $('establecimiento').value, sector: nombre, fecha: $('fecha').value });
+  return reg.some(r => claveSector(r) === k && !(r.fichaId ? r.fichaId === fichaId : fichaLegada));
+}
+function nombreLibre(reg) {
+  const base = $('sector').value.trim() || 'Sin nombre';
+  if (!choque($('sector').value, reg) && $('sector').value.trim()) return null;
+  if (!$('sector').value.trim() && !choque('Sin nombre', reg)) return 'Sin nombre';
+  let n = 2; while (choque(base + ' (' + n + ')', reg)) n++;
+  return base + ' (' + n + ')';
+}
+function avisoNombre() {
+  const reg = leerReg(), libre = $('sector').value.trim() && choque($('sector').value, reg) ? nombreLibre(reg) : null;
+  $('secWarn').textContent = libre ? `Ya hay un sector guardado con este nombre en esta fecha. Si no lo cambiás, se guarda como "${libre}".` : '';
+  $('secWarn').style.display = libre ? 'block' : 'none';
+}
+// Evita que un sector nuevo reemplace a otro guardado con el mismo nombre: lo renombra antes de guardar.
+function resolverNombre() {
+  const libre = nombreLibre(leerReg());
+  if (!libre) return;
+  const antes = $('sector').value.trim();
+  $('sector').value = libre;
+  if (antes) alert(`Ya había un sector "${antes}" guardado con la misma fecha. Este se guarda como "${libre}" para no reemplazarlo.`);
+  avisoNombre(); guardar();
+}
+
+// ---------- Datos sin exportar ----------
+function lectActual() {
+  if ($('modo').value === 'puestos') return ptosP.map(r => r.n + '=' + r.lux).join(' ');
+  if (!estado) return '';
+  const et = [...document.querySelectorAll('#tbody tr b')].map(b => b.textContent);
+  return [...document.querySelectorAll('#tbody .lux-input')].map((el, i) => et[i] + '=' + el.value.trim()).join(' ');
+}
+function hayLecturasActuales() {
+  if ($('modo').value === 'puestos') return ptosP.length > 0;
+  return [...document.querySelectorAll('#tbody .lux-input')].some(el => el.value.trim() !== '');
+}
+function contarPendientes() {
+  const reg = leerReg(), i = buscarActual(reg);
+  let n = reg.filter((r, j) => j !== i && r.exp !== true).length;
+  if (hayLecturasActuales()) { const r = reg[i]; if (!r || r.exp !== true || r.lect !== lectActual()) n++; }
+  return n;
+}
+function actualizarPendientes() {
+  const n = contarPendientes();
+  const reg = leerReg(), r = reg[buscarActual(reg)];
+  const actual = hayLecturasActuales() && (!r || r.exp !== true || r.lect !== lectActual());
+  $('pendBanner').classList.toggle('hidden', n === 0);
+  $('pendTxt').innerHTML = n ? `⚠ <b>${n} sector${n > 1 ? 'es' : ''} sin exportar</b> en este equipo${actual ? (n > 1 ? ' (incluye el sector en pantalla)' : ' (el sector en pantalla)') : ''}. Los datos están solo en este celular: exportá el CSV y envialo antes de cerrar la jornada.` : '';
+}
+
 function guardar() {
   try {
-    const d = { campos: {}, lect: {}, cd: null };
+    const d = { campos: {}, lect: {}, cd: null, ptos: ptosP, horasG, fichaId };
     IDS.forEach(id => d.campos[id] = $(id).value);
-    document.querySelectorAll('.lux-input').forEach(el => d.lect[el.dataset.point] = el.value);
-    if (estado) { const q = estado.snap.split('|'); d.cd = { L: q[0], A: q[1], H: q[2] }; }
+    document.querySelectorAll('#tbody .lux-input').forEach(el => d.lect[el.dataset.point] = el.value);
+    if (estado) { const q = estado.snap.split('|'); d.cd = { L: q[0], A: q[1], H: q[2], modo: q[3], nCols: q[4], nFilas: q[5] }; }
     localStorage.setItem(KEY, JSON.stringify(d));
   } catch (e) {}
+  try { actualizarPendientes(); } catch (e) {}
 }
 
 function restaurar() {
   try {
     const d = JSON.parse(localStorage.getItem(KEY) || 'null');
     if (!d) return;
+    if (d.fichaId) fichaId = d.fichaId; else fichaLegada = true;
     IDS.forEach(id => { if (d.campos[id] !== undefined) $(id).value = d.campos[id]; });
     $('obsPrint').textContent = $('observaciones').value;
+    ptosP = Array.isArray(d.ptos) ? d.ptos : [];
+    horasG = d.horasG || {};
     if (d.cd) {
-      $('L').value = d.cd.L; $('A').value = d.cd.A; $('H').value = d.cd.H;
+      $('modo').value = d.cd.modo || 'norma'; $('nCols').value = d.cd.nCols || ''; $('nFilas').value = d.cd.nFilas || '';
+      $('L').value = d.cd.L; $('A').value = d.cd.A; $('H').value = d.cd.H || '';
       calcular();
-      document.querySelectorAll('.lux-input').forEach(el => { el.value = d.lect[el.dataset.point] || ''; });
-      ['L','A','H'].forEach(id => $(id).value = d.campos[id]);
+      document.querySelectorAll('#tbody .lux-input').forEach(el => { el.value = d.lect[el.dataset.point] || ''; });
+      ['L','A','H','nCols','nFilas','modo'].forEach(id => { if (d.campos[id] !== undefined) $(id).value = d.campos[id]; });
+      aplicarModo();
       actualizarResumenLux();
       verificarVigencia();
     }
@@ -284,103 +492,197 @@ function restaurar() {
 
 function leerReg() { try { return JSON.parse(localStorage.getItem(KREG) || '[]'); } catch (e) { return []; } }
 
-function registrar() {
-  if (!estado) return;
-  const els = [...document.querySelectorAll('.lux-input')];
-  const rs = els.map(leerLux);
-  const vals = rs.filter(r => r.t === 'ok').map(r => r.v);
-  if (!vals.length) return;
-  const et = [...document.querySelectorAll('#tbody tr b')].map(b => b.textContent);
-  const prom = vals.reduce((a, b) => a + b, 0) / vals.length, mn = Math.min(...vals), mx = Math.max(...vals);
-  const f = {};
-  IDS.forEach(id => f[id] = $(id).value);
-  Object.assign(f, {
-    L: estado.L, A: estado.A, H: estado.snap.split('|')[2],
-    K: $('rK').textContent, N: $('rN').textContent.replace(' puntos', ''), grilla: $('rGrid').textContent,
-    puntos: els.length, cargadas: vals.length, prom, mn, mx, unif: prom > 0 ? mn / prom : null,
-    lect: els.map((el, i) => et[i] + '=' + el.value.trim()).join(' ')
-  });
+function guardarEnRegistro(f) {
   try {
     const reg = leerReg();
-    const key = r => [r.establecimiento, r.sector, r.fecha].join('|');
-    const i = reg.findIndex(r => key(r) === key(f));
+    const i = buscarActual(reg);
+    f.fichaId = fichaId;
+    const sinExp = r => JSON.stringify({ ...r, exp: undefined, fichaId: undefined });
+    f.exp = i >= 0 && reg[i].exp === true && sinExp(reg[i]) === sinExp(f);   // sigue exportado solo si no cambió nada
     if (i >= 0) reg[i] = f; else reg.push(f);
     localStorage.setItem(KREG, JSON.stringify(reg));
   } catch (e) {}
   actualizarRegistro();
 }
 
+function registrarPuestos() {
+  if (!ptosP.length) return;
+  resolverNombre();
+  const vals = ptosP.map(r => leerLux({ value: String(r.lux) })).filter(r => r.t === 'ok').map(r => r.v);
+  const f = {};
+  IDS.forEach(id => f[id] = $(id).value);
+  Object.assign(f, {
+    L: '', A: '', H: '', K: '', N: '', grilla: '', modo: 'Por puestos',
+    puntos: ptosP.length, cargadas: vals.length,
+    prom: '', mn: vals.length ? Math.min(...vals) : '', mx: vals.length ? Math.max(...vals) : '', unif: '-', cumpleUnif: '-',
+    lect: ptosP.map(r => r.n + '=' + r.lux).join(' '),
+    ptos: ptosP.map(r => ({ ...r }))
+  });
+  guardarEnRegistro(f);
+}
+
+function registrar() {
+  if ($('modo').value === 'puestos') { registrarPuestos(); return; }
+  if (!estado) return;
+  const els = [...document.querySelectorAll('#tbody .lux-input')];
+  const rs = els.map(leerLux);
+  const vals = rs.filter(r => r.t === 'ok').map(r => r.v);
+  if (!vals.length) return;
+  resolverNombre();
+  const et = [...document.querySelectorAll('#tbody tr b')].map(b => b.textContent);
+  const prom = vals.reduce((a, b) => a + b, 0) / vals.length, mn = Math.min(...vals), mx = Math.max(...vals);
+  const f = {};
+  IDS.forEach(id => f[id] = $(id).value);
+  Object.assign(f, {
+    L: estado.L, A: estado.A, H: estado.H, modo: estado.modo === 'custom' ? 'Personalizada' : 'Normativo',
+    K: estado.modo === 'custom' ? '' : $('rK').textContent, N: estado.modo === 'custom' ? '' : $('rN').textContent.replace(' puntos', ''), grilla: $('rGrid').textContent,
+    puntos: els.length, cargadas: vals.length, prom, mn, mx, unif: prom > 0 ? mn / prom : null,
+    cumpleUnif: prom > 0 ? (mn / prom >= 0.5 ? 'Sí' : 'No') : '',
+    lect: els.map((el, i) => et[i] + '=' + el.value.trim()).join(' '),
+    ptos: els.map((el, i) => ({ etq: et[i], lux: el.value.trim(), hora: horasG[el.dataset.point] || '' })).filter(q => q.lux !== '')
+  });
+  // Conserva los N° ya asignados a este sector (si se vuelve a guardar), o toma los siguientes del contador global.
+  const regAct = leerReg(), prev = regAct[buscarActual(regAct)];
+  const nums = {};
+  if (prev && Array.isArray(prev.ptos)) prev.ptos.forEach(q => { if (q.etq && q.n) nums[q.etq] = q.n; });
+  f.ptos.forEach(q => { q.n = nums[q.etq] || tomarNumero(); });
+  guardarEnRegistro(f);
+  mostrarNumGrilla();
+}
+
+function tomarNumero() { const n = leerNext(); fijarNext(n + 1); return n; }
+
+function mostrarNumGrilla() {
+  const reg = leerReg(), r = reg[buscarActual(reg)];
+  const nums = {};
+  if (r && Array.isArray(r.ptos)) r.ptos.forEach(q => { if (q.etq) nums[q.etq] = q.n; });
+  document.querySelectorAll('#tbody .g-num').forEach(td => { td.textContent = nums[td.dataset.etq] || '-'; });
+}
+
 function actualizarRegistro() {
   const reg = leerReg();
   $('regInfo').innerHTML = reg.length
-    ? `<b>${reg.length}</b> sector(es) guardado(s): ${reg.map(r => esc(r.sector || 'sin nombre')).join(', ')}. Se guardan al exportar el PDF o al iniciar un sector nuevo.`
+    ? `<b>${reg.length}</b> sector(es) guardado(s): ${reg.map(r => esc(r.sector || 'sin nombre') + (r.exp === true ? ' ✓' : '')).join(', ')}.${reg.some(r => r.exp === true) ? ' (✓ = ya exportado)' : ''} Se guardan al exportar el PDF o al iniciar un sector nuevo.`
     : 'Ninguno todavía. Cada sector se guarda al exportar el PDF o al iniciar un sector nuevo.';
+  actualizarPendientes();
 }
 
+// Exportación global: una fila por punto de muestreo (grilla y puestos), con las columnas de la planilla
+// del protocolo (Res. SRT 84/2012). Puesto, sistema y valor requerido quedan vacíos para completar con el croquis.
 function descargarCSV() {
   registrar();
   const reg = leerReg();
-  if (!reg.length) { alert('No hay sectores guardados todavía.'); return; }
-  const cols = [['Empresa','empresa'],['Establecimiento','establecimiento'],['Sector','sector'],['Origen/orientación','origen'],['Fecha','fecha'],['Hora inicio','horaInicio'],['Hora fin','horaFin'],['L (m)','L'],['A (m)','A'],['Hm (m)','H'],['K','K'],['N mínimo','N'],['Grilla','grilla'],['Puntos','puntos'],['Cargadas','cargadas'],['Emed (lux)','prom'],['Emín (lux)','mn'],['Emáx (lux)','mx'],['Emín/Emed','unif'],['Observaciones','observaciones'],['Lecturas','lect']];
-  const q = v => {
-    if (v === null || v === undefined) return '';
-    if (typeof v === 'number') v = (Number.isInteger(v) ? String(v) : v.toFixed(2)).replace('.', ',');
-    return '"' + String(v).replace(/"/g, '""').replace(/\r?\n/g, ' ') + '"';
-  };
-  const csv = '\uFEFF' + [cols.map(c => q(c[0])).join(';')].concat(reg.map(r => cols.map(c => q(r[c[1]])).join(';'))).join('\r\n');
+  // Sectores de grilla guardados por versiones anteriores: se les arma la lista de puntos y se numeran.
+  let cambio = false;
+  reg.forEach(r => {
+    if (r.modo === 'Por puestos' || Array.isArray(r.ptos) || !r.lect) return;
+    r.ptos = r.lect.split(' ').map(t => { const [etq, lux] = t.split('='); return { etq, lux: (lux || '').trim() }; })
+      .filter(q => q.lux !== '').map(q => ({ ...q, n: tomarNumero() }));
+    cambio = true;
+  });
+  if (cambio) try { localStorage.setItem(KREG, JSON.stringify(reg)); } catch (e) {}
+
+  const fmt = x => (typeof x === 'number' ? x.toFixed(2) : String(x)).replace('.', ',');
+  const filas = [];
+  reg.forEach(r => (r.ptos || []).forEach(p => {
+    const v = leerLux({ value: String(p.lux) });
+    const grilla = r.modo !== 'Por puestos';
+    filas.push({
+      n: p.n, hora: p.hora || r.horaInicio || '', sector: r.sector, puesto: '', tipoIlum: '', fuente: '', sistema: '',
+      unif: grilla && typeof r.unif === 'number' ? fmt(r.unif) + ' - ' + (r.unif >= 0.5 ? 'Cumple' : 'No cumple') : '-',
+      lux: v.t === 'ok' ? v.v : v.t === 'na' ? '-' : p.lux, req: '',
+      etq: grilla ? p.etq : '', modo: grilla ? (r.modo === 'Personalizada' ? 'Grilla personalizada' : 'Grilla normativa') : 'Por puestos',
+      fecha: r.fecha, establecimiento: r.establecimiento, croquis: r.croquis,
+      emed: grilla ? r.prom : '', emin: grilla ? r.mn : '', emax: grilla ? r.mx : '',
+      grillaDim: r.grilla || '', K: r.K ? String(r.K).replace('.', ',') : '', L: r.L, A: r.A, H: r.H, obs: r.observaciones
+    });
+  }));
+  if (!filas.length) { alert('No hay sectores con lecturas guardadas todavía.'); return; }
+  filas.sort((a, b) => a.n - b.n);
+  bajarCSV([['Punto de muestreo','n'],['Hora','hora'],['Sector','sector'],['Sección / Puesto / Puesto tipo','puesto'],
+    ['Tipo de iluminación','tipoIlum'],['Tipo de fuente lumínica','fuente'],['Iluminación general / localizada / mixta','sistema'],
+    ['Uniformidad Emín ≥ Emed/2','unif'],['Valor medido (lux)','lux'],['Valor requerido Anexo IV Dto. 351/79','req'],
+    ['Punto de grilla','etq'],['Modo','modo'],['Fecha','fecha'],['Establecimiento','establecimiento'],['Croquis','croquis'],
+    ['Emed sector (lux)','emed'],['Emín sector (lux)','emin'],['Emáx sector (lux)','emax'],['Grilla (col×filas)','grillaDim'],['K','K'],
+    ['L (m)','L'],['A (m)','A'],['Hm (m)','H'],['Observaciones','obs']], filas, 'Relevamiento_iluminacion_');
+  try {
+    const r2 = leerReg(); r2.forEach(r => { r.exp = true; });
+    localStorage.setItem(KREG, JSON.stringify(r2));
+  } catch (e) {}
+  actualizarRegistro();
+}
+
+function csvCelda(v) {
+  if (v === null || v === undefined) return '';
+  if (typeof v === 'number') v = (Number.isInteger(v) ? String(v) : v.toFixed(2)).replace('.', ',');
+  return '"' + String(v).replace(/"/g, '""').replace(/\r?\n/g, ' ') + '"';
+}
+function bajarCSV(cols, filas, prefijo) {
+  const csv = '\uFEFF' + [cols.map(c => csvCelda(c[0])).join(';')].concat(filas.map(r => cols.map(c => csvCelda(r[c[1]])).join(';'))).join('\r\n');
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv;charset=utf-8' }));
-  a.download = 'Relevamiento_iluminacion_' + fechaLocalISO() + '.csv';
+  a.download = prefijo + fechaLocalISO() + '.csv';
   document.body.appendChild(a); a.click(); a.remove();
 }
 
 function borrarRegistro() {
-  if (!confirm('¿Borrar el registro de todos los sectores guardados en este equipo? Descargá el CSV antes si lo necesitás.')) return;
+  const n = contarPendientes(), enCurso = hayLecturasActuales();
+  const extra = enCurso ? '\n\nTambién se descartan las lecturas del sector que está en pantalla.' : '';
+  if (!confirm((n ? `⚠ Hay ${n} sector(es) que todavía NO se exportaron y se van a perder.\n\n¿Borrar igual el registro de este equipo?`
+                  : '¿Borrar el registro de todos los sectores guardados en este equipo? (ya fueron exportados)') + extra)) return;
   try { localStorage.removeItem(KREG); } catch (e) {}
+  limpiarFicha();
   actualizarRegistro();
 }
 
 function calcular() {
   const lecturasPrevias = {};
-  document.querySelectorAll('.lux-input').forEach(el => { lecturasPrevias[el.dataset.point] = el.value; });
+  document.querySelectorAll('#tbody .lux-input').forEach(el => { lecturasPrevias[el.dataset.point] = el.value; });
   const L = num('L');
   const A = num('A');
-  const H = num('H');
-  const ok = L > 0 && A > 0 && H > 0;
+  const modo = $('modo').value;
+  const H = modo === 'norma' ? num('H') : NaN;
+  let nL, nA, K, x, N, ok;
+  if (modo === 'custom') {
+    const sc = $('nCols').value.trim(), sf = $('nFilas').value.trim();
+    nL = parseInt(sc, 10); nA = parseInt(sf, 10);
+    ok = L > 0 && A > 0 && /^\d+$/.test(sc) && /^\d+$/.test(sf) && nL >= 1 && nA >= 1 && nL <= 50 && nA <= 50;
+    $('err').textContent = 'Ingresá largo y ancho mayores que cero, y columnas y filas como enteros entre 1 y 50.';
+  } else {
+    ok = L > 0 && A > 0 && H > 0;
+    $('err').textContent = 'Ingresa valores mayores que cero en los tres campos.';
+  }
   $('err').style.display = ok ? 'none' : 'block';
   if (!ok) return;
 
-  // 1. Índice de local
-  const K = Math.round(((L * A) / (H * (L + A))) * 1e9) / 1e9;   // evita 1.0000000000000002
-
-  // 2. Valor de x
-  let x;
-  if (K >= 3) x = 4;
-  else x = Math.max(1, Math.ceil(K));
-
-  // 3. Número mínimo de puntos
-  const N = (x + 2) ** 2;
-
-  // 4. Grilla de áreas aproximadamente cuadradas
-  const g = elegirGrilla(L, A, N);            // nL*nA >= N, áreas casi cuadradas
-  const nL = g.nL, nA = g.nA;
+  if (modo === 'norma') {
+    K = Math.round(((L * A) / (H * (L + A))) * 1e9) / 1e9;   // evita 1.0000000000000002
+    x = K >= 3 ? 4 : Math.max(1, Math.ceil(K));
+    N = (x + 2) ** 2;
+    const g = elegirGrilla(L, A, N);          // nL*nA >= N, áreas casi cuadradas
+    nL = g.nL; nA = g.nA;
+  }
   const hayLect = Object.values(lecturasPrevias).some(v => v.trim() !== '');
   const cambia = estado && (estado.nL !== nL || estado.nA !== nA);
   if (hayLect && cambia && !confirm('La grilla cambió de ' + estado.nL + '×' + estado.nA + ' a ' + nL + '×' + nA + '. Las lecturas cargadas ya no corresponden a los mismos puntos y se borrarán. ¿Continuar?')) return;
   const prev = cambia ? {} : lecturasPrevias;
+  if (cambia) horasG = {};
   const total = nL * nA;
   const cw = L / nL, ch = A / nA;             // dimensiones reales de cada área
 
   // Resultados
-  $('rK').textContent = K.toFixed(2);
-  $('rX').textContent = x;
-  $('rN').textContent = N + ' puntos';
+  if (modo === 'norma') {
+    $('rK').textContent = K.toFixed(2);
+    $('rX').textContent = x;
+    $('rN').textContent = N + ' puntos';
+  }
   $('rGrid').textContent = nL + ' × ' + nA;
   $('rTotal').textContent = total;
   $('detail').innerHTML =
     `Área de cada sector: <b>${cw.toFixed(2)} m × ${ch.toFixed(2)} m</b><br>` +
     `Superficie total: <b>${(L * A).toFixed(2)} m²</b><br>` +
-    (total !== N ? `<i>La grilla final tiene ${total} puntos (ajustada para cubrir todo el recinto con áreas casi cuadradas).</i>` : `La grilla coincide exactamente con N.`);
+    (modo === 'custom' ? `<i>Grilla definida por el usuario (${nL} columnas × ${nA} filas); no se aplica el cálculo de K ni N.</i>`
+      : total !== N ? `<i>La grilla final tiene ${total} puntos (ajustada para cubrir todo el recinto con áreas casi cuadradas).</i>` : `La grilla coincide exactamente con N.`);
 
   $('resultCard').classList.remove('hidden');
   $('gridCard').classList.remove('hidden');
@@ -395,11 +697,12 @@ function calcular() {
 
   // Tabla
   $('tbody').innerHTML = pts.map((p, k) =>
-    `<tr><td><b>${p.etiqueta}</b></td><td>${p.fila}</td><td>${p.col}</td><td>${p.x.toFixed(2)}</td><td>${p.y.toFixed(2)}</td><td><input class="lux-input" type="text" inputmode="decimal" autocomplete="off" data-point="${k + 1}" aria-label="Iluminancia punto ${k + 1}" placeholder="lux" enterkeyhint="next"></td></tr>`
+    `<tr><td class="g-num" data-etq="${p.etiqueta}">-</td><td><b>${p.etiqueta}</b></td><td>${p.fila}</td><td>${p.col}</td><td>${p.x.toFixed(2)}</td><td>${p.y.toFixed(2)}</td><td><input class="lux-input" type="text" inputmode="decimal" autocomplete="off" data-point="${k + 1}" aria-label="Iluminancia punto ${k + 1}" placeholder="lux" enterkeyhint="next"></td></tr>`
   ).join('');
-  document.querySelectorAll('.lux-input').forEach(el => { el.value = prev[el.dataset.point] || ''; });
+  document.querySelectorAll('#tbody .lux-input').forEach(el => { el.value = prev[el.dataset.point] || ''; });
   actualizarResumenLux();
-  estado = { L, A, nL, nA, cw, ch, pts, snap: [L, A, H].join('|') };
+  estado = { L, A, nL, nA, cw, ch, pts, modo, H: modo === 'norma' ? H : '', snap: snapActual() };
+  mostrarNumGrilla();
   verificarVigencia();
   redibujar();
 }
@@ -409,7 +712,6 @@ function dibujar(L, A, nL, nA, cw, ch, pts) {
   const ctx = cv.getContext('2d');
   const W = cv.clientWidth || 500;
   const pad = 30;
-  const scale = Math.min((W - 2 * pad) / L, (W - 2 * pad) / A * 1); // mantiene proporción
   const sc = Math.min((W - 2 * pad) / L, (W - 2 * pad) / A);
   const rw = L * sc, rh = A * sc;
   const ox = (W - rw) / 2, oy = (W - rh) / 2;
@@ -477,7 +779,7 @@ function dibujar(L, A, nL, nA, cw, ch, pts) {
 }
 
 function actualizarResumenLux() {
-  const els = [...document.querySelectorAll('.lux-input')];
+  const els = [...document.querySelectorAll('#tbody .lux-input')];
   const total = els.length;
   if (!total) { $('luxSummary').textContent = 'Primero calcule la grilla; luego ingrese las lecturas de iluminancia en lux.'; return; }
   const vals = []; let na = 0, mal = 0;
@@ -486,18 +788,33 @@ function actualizarResumenLux() {
     el.classList.toggle('bad', q.t === 'mal');
     if (q.t === 'ok') vals.push(q.v); else if (q.t === 'na') na++; else if (q.t === 'mal') mal++;
   });
-  let h = `Lecturas cargadas: <b>${vals.length} de ${total}</b>` + (na ? ` · No aplica: <b>${na}</b>` : '');
-  if (mal) h += `<br><span style="color:#b91c1c">⚠ ${mal} valor(es) inválido(s) en rojo: use solo números (coma o punto decimal) o "NA" si no se puede medir. No entran en el cálculo.</span>`;
+  let h = `Lecturas cargadas: <b>${vals.length} de ${total}</b>` + (na ? ` · No se pudo medir: <b>${na}</b>` : '');
+  if (mal) h += `<br><span style="color:#b91c1c">⚠ ${mal} valor(es) inválido(s) en rojo: use solo números (coma o punto decimal) o "-" si no se pudo medir. No entran en el cálculo.</span>`;
   if (vals.length) {
     const prom = vals.reduce((a, b) => a + b, 0) / vals.length, mn = Math.min(...vals), mx = Math.max(...vals);
     h += `<br>Promedio (Emed): <b>${prom.toFixed(1)} lux</b> · Mínimo: <b>${mn.toFixed(1)}</b> · Máximo: <b>${mx.toFixed(1)}</b>`;
     if (prom > 0) {
       const u = mn / prom;
-      h += `<br>Uniformidad Emín/Emed: <b>${u.toFixed(2)}</b> (${u >= 0.5 ? 'cumple' : 'NO cumple'} Emín ≥ Emed/2)` + (vals.length + na < total ? ' · parcial: faltan lecturas' : '');
+      h += `<br>Uniformidad Emín/Emed: <b>${u.toFixed(2)}</b> (${u >= 0.5 ? 'cumple' : '<span style="color:#b91c1c">NO cumple</span>'} Emín ≥ Emed/2)`;
     }
+    if (vals.length + na < total) h += '<br><i>Resultado parcial: faltan lecturas.</i>';
   }
   $('luxSummary').innerHTML = h;
   redibujar();
+}
+
+function actualizarBotonGuion() {
+  const ok = celdaG && document.body.contains(celdaG);
+  $('btnGuion').disabled = !ok;
+  $('btnGuion').textContent = ok ? `Marcar ${celdaG.closest('tr').querySelector('b').textContent} como no medido ( - )` : 'Tocá una celda para marcarla como no medida ( - )';
+}
+function marcarGuion() {
+  if (!celdaG || !document.body.contains(celdaG)) return;
+  celdaG.value = '-';
+  celdaG.dispatchEvent(new Event('input', { bubbles: true }));
+  const l = [...document.querySelectorAll('#tbody .lux-input')], sig = l[l.indexOf(celdaG) + 1];
+  if (sig) { sig.focus(); celdaG = sig; } else celdaG.blur();
+  actualizarBotonGuion();
 }
 
 function horaLocal() {
@@ -505,17 +822,12 @@ function horaLocal() {
   return ahora.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false });
 }
 
-function iniciarRegistroHorario() {
-  $('horaInicio').value = horaLocal();
-  $('horaFin').value = '';
-}
-
 function exportarPDF() {
-  if ($('gridCard').classList.contains('hidden')) {
-    alert('Primero complete las dimensiones y calcule la grilla.');
+  const porPuestos = $('modo').value === 'puestos';
+  if (porPuestos ? !ptosP.length : $('gridCard').classList.contains('hidden')) {
+    alert(porPuestos ? 'Todavía no hay puntos registrados en este sector.' : 'Primero complete las dimensiones y calcule la grilla.');
     return;
   }
-  $('horaFin').value = horaLocal();
   $('obsPrint').textContent = $('observaciones').value;
   registrar(); guardar();
   document.title = `Ficha_Iluminacion_${($('sector').value || 'Sector').trim().replace(/[^a-z0-9-_]+/gi, '_')}_${$('fecha').value || 'sin_fecha'}`;
@@ -523,18 +835,25 @@ function exportarPDF() {
 }
 
 function nuevaFicha() {
-  if (!confirm('¿Iniciar un sector nuevo? El sector actual queda guardado en el registro del equipo si tiene lecturas.')) return;
+  if (!confirm('¿Guardar este sector y empezar uno nuevo? El sector actual queda guardado en el registro del equipo si tiene lecturas.')) return;
   registrar();
-  ['sector','origen','L','A','H','observaciones'].forEach(id => $(id).value = '');   // empresa y establecimiento se conservan
-  $('fecha').value = fechaLocalISO();
-  iniciarRegistroHorario();
+  limpiarFicha();
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+// Deja la ficha lista para un sector nuevo (sin guardar nada).
+function limpiarFicha() {
+  // Se conservan: empresa, establecimiento y croquis.
+  ['sector','origen','L','A','H','nCols','nFilas','observaciones'].forEach(id => $(id).value = '');
+    $('fecha').value = fechaLocalISO();
   $('resultCard').classList.add('hidden');
   $('gridCard').classList.add('hidden');
   $('tbody').innerHTML = '';
   $('luxSummary').textContent = 'Primero calcule la grilla; luego ingrese las lecturas de iluminancia en lux.';
   $('err').style.display = 'none';
+  fichaId = nuevoId(); fichaLegada = false; celdaG = null; actualizarBotonGuion(); avisoNombre();
+  ptosP = []; horasG = {}; $('pLux').value = ''; $('pOk').style.display = 'none'; $('pErr').style.display = 'none'; renderPuestos();   // la numeración continúa
   estado = null; $('stale').style.display = 'none'; $('obsPrint').textContent = ''; guardar();
-  window.scrollTo({top: 0, behavior: 'smooth'});
 }
 
 function fechaLocalISO() {
@@ -548,23 +867,46 @@ $('btnPdf').addEventListener('click', exportarPDF);
 $('btnNew').addEventListener('click', nuevaFicha);
 $('btnCsv').addEventListener('click', descargarCSV);
 $('btnClr').addEventListener('click', borrarRegistro);
+$('btnAdd').addEventListener('click', agregarPunto);
+$('btnPendCsv').addEventListener('click', descargarCSV);
+$('tbody').addEventListener('focusin', e => { if (e.target.classList.contains('lux-input')) { celdaG = e.target; actualizarBotonGuion(); } });
+// pointerdown con preventDefault: el botón no le quita el foco a la celda, así el teclado no se cierra
+$('btnGuion').addEventListener('pointerdown', e => e.preventDefault());
+$('btnGuion').addEventListener('mousedown', e => e.preventDefault());
+$('btnGuion').addEventListener('click', marcarGuion);
+window.addEventListener('beforeunload', e => { if (contarPendientes() > 0) { e.preventDefault(); e.returnValue = ''; } });
+$('btnNoMed').addEventListener('click', () => { $('pLux').value = '-'; agregarPunto(); });
+$('btnUndo').addEventListener('click', borrarUltimo);
+$('pLux').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); agregarPunto(); } });
 document.addEventListener('input', e => {
   const t = e.target;
-  if (t.classList && t.classList.contains('lux-input')) actualizarResumenLux();
-  if (t.id === 'L' || t.id === 'A' || t.id === 'H') verificarVigencia();
+  if (t.id === 'pLux') return;
+  if (t.classList && t.classList.contains('p-lux')) { ptosP[+t.dataset.i].lux = t.value.trim(); resumenPuestos(); guardar(); return; }
+  if (t.id === 'pNext') { const v = parseInt(t.value, 10); if (v >= 1) fijarNext(v); return; }
+  if (t.classList && t.classList.contains('lux-input') && !t.classList.contains('p-lux')) {
+    const k = t.dataset.point;
+    if (t.value.trim() === '') delete horasG[k]; else if (!horasG[k]) horasG[k] = horaLocal();
+    actualizarResumenLux();
+  }
+  if (t.id === 'modo') aplicarModo();
+  if (['L','A','H','nCols','nFilas','modo'].includes(t.id)) verificarVigencia();
   if (t.id === 'observaciones') $('obsPrint').textContent = t.value;
+  if (['sector','establecimiento','fecha'].includes(t.id)) avisoNombre();
   guardar();
 });
 $('tbody').addEventListener('keydown', e => {
   if (e.key !== 'Enter' || !e.target.classList.contains('lux-input')) return;
   e.preventDefault();
-  const l = [...document.querySelectorAll('.lux-input')], k = l.indexOf(e.target);
+  const l = [...document.querySelectorAll('#tbody .lux-input')], k = l.indexOf(e.target);
   if (l[k + 1]) l[k + 1].focus(); else e.target.blur();
 });
 restaurar();
+aplicarModo();
+$('pNext').value = leerNext();
+renderPuestos();
 if (!$('fecha').value) $('fecha').value = fechaLocalISO();
-if (!$('horaInicio').value) iniciarRegistroHorario();
 actualizarRegistro();
+avisoNombre();
 // El teclado del móvil dispara resize: solo se redibuja el esquema, la tabla no se toca.
 window.addEventListener('resize', redibujar);
 </script>
